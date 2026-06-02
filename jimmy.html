@@ -5,24 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>李彥綸 - 數位名片</title>
     <style>
-        body { margin: 0; min-height: 100vh; display: flex; justify-content: center; align-items: center; background-color: #f4f4f4; padding: 20px; box-sizing: border-box; }
-        .container { display: flex; align-items: center; gap: 20px; max-width: 800px; width: 100%; }
+        /* 移除垂直置中，改為從頂部開始排列，防止名片被推到螢幕外 */
+        body { 
+            margin: 0; min-height: 100vh; display: flex; 
+            justify-content: center; align-items: flex-start; 
+            background-color: #f4f4f4; padding: 15px; box-sizing: border-box; 
+        }
+
+        .container { 
+            display: flex; align-items: center; gap: 20px; 
+            max-width: 800px; width: 100%; 
+        }
+
         .qr-section { flex: 1; max-width: 200px; }
         .qr-section img { width: 100%; border-radius: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
         
-        /* 修正手機版塌陷問題 */
         .card-container { flex: 2; position: relative; width: 100%; aspect-ratio: 1.7 / 1; }
         .face { position: absolute; width: 100%; height: 100%; border-radius: 15px; overflow: hidden; box-shadow: 0 8px 16px rgba(0,0,0,0.3); display: none; }
         .face.active { display: block; }
         img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-        /* 隱形觸控區域 */
         .nav-left { position: absolute; left: 0; top: 0; width: 50%; height: 100%; cursor: pointer; z-index: 10; }
         .nav-right { position: absolute; right: 0; top: 0; width: 50%; height: 100%; cursor: pointer; z-index: 10; }
 
         @media (max-width: 600px) {
-            .container { flex-direction: column; }
-            .qr-section { max-width: 150px; margin-bottom: 10px; }
+            .container { flex-direction: column; gap: 15px; }
+            .qr-section { max-width: 120px; } /* 手機版稍微縮小，確保名片能顯示 */
             .card-container { width: 100%; }
         }
     </style>
@@ -40,7 +48,6 @@
             <div class="nav-left" onclick="navigate('left')"></div>
             <div class="nav-right" onclick="navigate('right')"></div>
 
-            <!-- 名片四面 -->
             <div class="face active" id="p0"><img src="https://king-newton.github.io/cards/jimmy-ch1.jpg"></div>
             <div class="face" id="p1"><img src="https://king-newton.github.io/cards/jimmy-en1.jpg"></div>
             <div class="face" id="p2"><img src="https://king-newton.github.io/cards/jimmy-ch2.jpg"></div>
@@ -50,12 +57,11 @@
 
     <script>
         let current = 0;
-        // 定義跳轉規則
         const map = {
-            0: { left: 2, right: 1 }, // 中正: 左->中背, 右->英正
-            1: { left: 3, right: 0 }, // 英正: 左->英背, 右->中正
-            2: { left: 3, right: 0 }, // 中背: 左->英背, 右->中正
-            3: { left: 2, right: 1 }  // 英背: 左->中背, 右->英正
+            0: { left: 2, right: 1 },
+            1: { left: 3, right: 0 },
+            2: { left: 3, right: 0 },
+            3: { left: 2, right: 1 }
         };
 
         function navigate(dir) {
