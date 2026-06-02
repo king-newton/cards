@@ -5,75 +5,60 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>李彥綸 - 數位名片</title>
     <style>
-        body { 
-            margin: 0; min-height: 100vh; 
-            display: flex; justify-content: center; align-items: center; 
-            background-color: #f4f4f4; padding: 20px; box-sizing: border-box;
-        }
-
-        .container { 
-            display: flex; align-items: center; gap: 20px; 
-            max-width: 800px; width: 100%;
-        }
-
+        body { margin: 0; min-height: 100vh; display: flex; justify-content: center; align-items: center; background-color: #f4f4f4; padding: 20px; box-sizing: border-box; }
+        .container { display: flex; align-items: center; gap: 20px; max-width: 800px; width: 100%; }
         .qr-section { flex: 1; max-width: 200px; }
-        .qr-section a { display: block; }
         .qr-section img { width: 100%; border-radius: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
         
-        .flip-card { 
-            flex: 2; aspect-ratio: 1.7 / 1; 
-            perspective: 1000px; cursor: pointer;
-        }
-
-        .flip-card-inner { 
-            position: relative; width: 100%; height: 100%; 
-            transition: transform 0.6s; transform-style: preserve-3d; 
-        }
-
-        .flip-card.active .flip-card-inner { transform: rotateY(180deg); }
-
-        .flip-card-front, .flip-card-back { 
-            position: absolute; width: 100%; height: 100%; 
-            backface-visibility: hidden; border-radius: 15px;
-            overflow: hidden; box-shadow: 0 8px 16px rgba(0,0,0,0.3);
-        }
-
-        .flip-card-back { transform: rotateY(180deg); }
+        .card-container { flex: 2; position: relative; aspect-ratio: 1.7 / 1; }
+        .face { position: absolute; width: 100%; height: 100%; border-radius: 15px; overflow: hidden; box-shadow: 0 8px 16px rgba(0,0,0,0.3); display: none; }
+        .face.active { display: block; }
         img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
+        /* 隱形觸控區域 */
+        .nav-left { position: absolute; left: 0; top: 0; width: 50%; height: 100%; cursor: pointer; z-index: 10; }
+        .nav-right { position: absolute; right: 0; top: 0; width: 50%; height: 100%; cursor: pointer; z-index: 10; }
+
         @media (max-width: 600px) {
-            .container { flex-direction: column; gap: 15px; }
+            .container { flex-direction: column; }
             .qr-section { max-width: 150px; }
-            .flip-card { width: 100%; }
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <!-- 已修正為正確的大小寫檔名 -->
         <div class="qr-section">
             <a href="https://king-newton.github.io/cards/contact-jimmy.vcf">
                 <img src="https://king-newton.github.io/cards/King-Newton.png" alt="儲存聯絡人">
             </a>
         </div>
 
-        <div class="flip-card" id="card" onclick="toggleCard()">
-            <div class="flip-card-inner">
-                <div class="flip-card-front">
-                    <img src="https://king-newton.github.io/cards/jimmy-ch1.jpg" alt="名片正面">
-                </div>
-                <div class="flip-card-back">
-                    <img src="https://king-newton.github.io/cards/jimmy-ch2.jpg" alt="名片背面">
-                </div>
-            </div>
+        <div class="card-container">
+            <div class="nav-left" onclick="navigate('left')"></div>
+            <div class="nav-right" onclick="navigate('right')"></div>
+
+            <div class="face active" id="p0"><img src="https://king-newton.github.io/cards/jimmy-ch1.jpg"></div>
+            <div class="face" id="p1"><img src="https://king-newton.github.io/cards/jimmy-en1.jpg"></div>
+            <div class="face" id="p2"><img src="https://king-newton.github.io/cards/jimmy-ch2.jpg"></div>
+            <div class="face" id="p3"><img src="https://king-newton.github.io/cards/jimmy-en2.jpg"></div>
         </div>
     </div>
 
     <script>
-        function toggleCard() {
-            var card = document.getElementById('card');
-            card.classList.toggle('active');
+        let current = 0;
+        // 定義跳轉規則
+        const map = {
+            0: { left: 2, right: 1 }, // 中正: 左->中背, 右->英正
+            1: { left: 3, right: 0 }, // 英正: 左->英背, 右->中正
+            2: { left: 3, right: 0 }, // 中背: 左->英背, 右->中正
+            3: { left: 2, right: 1 }  // 英背: 左->中背, 右->英正
+        };
+
+        function navigate(dir) {
+            document.getElementById('p' + current).classList.remove('active');
+            current = map[current][dir];
+            document.getElementById('p' + current).classList.add('active');
         }
     </script>
 </body>
