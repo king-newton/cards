@@ -6,13 +6,13 @@
     <title>李彥綸 - AI 數位入口</title>
     <style>
         html, body { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; background-color: #0f172a; color: white; font-family: sans-serif; }
-        body { display: flex; flex-direction: column; align-items: center; padding: 20px; box-sizing: border-box; }
+        body { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; }
 
-        /* 頭像區 (移除了 QR Code，頭像置中) */
+        /* 頭像區 */
         .profile-section { margin-bottom: 25px; text-align: center; }
         .profile-pic { width: 110px; height: 110px; border-radius: 50%; object-fit: cover; border: 3px solid rgba(255,255,255,0.2); }
 
-        /* 名片區 */
+        /* 名片翻轉區 */
         .card-container { position: relative; width: 100%; max-width: 350px; aspect-ratio: 1.7 / 1; cursor: pointer; margin-bottom: 25px; }
         .face { position: absolute; width: 100%; height: 100%; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.5); display: none; }
         .face.active { display: block; }
@@ -24,6 +24,19 @@
         .btn-list { display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 350px; }
         .btn { background: rgba(255, 255, 255, 0.08); padding: 16px; border-radius: 12px; text-align: center; text-decoration: none; color: white; font-size: 16px; font-weight: 500; border: 1px solid rgba(255,255,255,0.15); transition: 0.3s; }
         .btn:active { background: rgba(255, 255, 255, 0.2); }
+
+        /* 關鍵功能：橫式自動切換滿版 */
+        @media (orientation: landscape) and (max-width: 900px) {
+            .profile-section, .btn-list { display: none !important; }
+            .card-container { 
+                max-width: 100vw !important; 
+                aspect-ratio: auto !important; 
+                height: 100vh !important; 
+                margin: 0 !important; 
+                border-radius: 0 !important; 
+            }
+            .face { border-radius: 0 !important; }
+        }
     </style>
 </head>
 <body>
