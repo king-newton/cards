@@ -5,33 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>李彥綸 - AI 數位入口</title>
     <style>
-        /* 強制去除邊界 */
-        html, body { margin: 0; padding: 0; height: 100vh; width: 100vw; overflow: hidden; background-color: #0f172a; color: white; font-family: sans-serif; }
+        html, body { margin: 0; padding: 20px; height: 100vh; width: 100vw; overflow: hidden; background-color: #0f172a; color: white; font-family: sans-serif; }
         body { display: flex; flex-direction: column; align-items: center; justify-content: center; box-sizing: border-box; }
 
         .main-wrapper { position: relative; width: 100%; max-width: 350px; display: flex; flex-direction: column; align-items: center; }
 
-        /* 個人區 */
+        /* 頭像與姓名 */
         .profile-section { display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; }
         .profile-pic { width: 90px; height: 90px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.2); object-fit: cover; }
         .name-tag { margin-top: 10px; font-size: 18px; font-weight: bold; }
 
-        /* 名片區 */
+        /* 名片 */
         .card-container { position: relative; width: 100%; aspect-ratio: 1.7 / 1; cursor: pointer; margin-bottom: 20px; }
         .face { position: absolute; width: 100%; height: 100%; border-radius: 12px; overflow: hidden; display: none; }
         .face.active { display: block; }
         .face img { width: 100%; height: 100%; object-fit: cover; }
         
-        .nav-left, .nav-right { position: absolute; top: 0; width: 50%; height: 100%; z-index: 10; }
-
-        /* 按鈕區 */
-        .btn-list { display: flex; flex-direction: column; gap: 12px; width: 100%; }
-        .btn { background: rgba(255, 255, 255, 0.08); padding: 14px; border-radius: 10px; text-align: center; color: white; text-decoration: none; border: 1px solid rgba(255,255,255,0.15); }
-
-        /* 橫式滿版 */
+        /* 橫式滿版模式下的懸浮頭像 */
         @media (orientation: landscape) and (max-width: 900px) {
             body { padding: 0 !important; }
-            .profile-section, .btn-list { display: none !important; }
+            .btn-list { display: none !important; }
+            
+            /* 將頭像轉為懸浮層 */
+            .profile-section { 
+                position: fixed; top: 15px; left: 15px; z-index: 100; 
+                margin-bottom: 0 !important; transform: scale(0.6); /* 縮小一點，避免遮擋內容 */
+            }
+            .name-tag { display: none; } /* 橫式只顯示頭像，不顯示名字以保持簡潔 */
+
             .card-container { max-width: 100vw !important; height: 100vh !important; margin: 0 !important; border-radius: 0 !important; }
             .face { border-radius: 0 !important; }
             .face img { object-fit: contain !important; background: #000; }
@@ -47,28 +48,23 @@
         </div>
 
         <div class="card-container">
-            <div class="nav-left" onclick="navigate('left')"></div>
-            <div class="nav-right" onclick="navigate('right')"></div>
+            <!-- 導航區 -->
+            <div style="position:absolute; top:0; left:0; width:50%; height:100%; z-index:10;" onclick="navigate('left')"></div>
+            <div style="position:absolute; top:0; right:0; width:50%; height:100%; z-index:10;" onclick="navigate('right')"></div>
+            
             <div class="face active" id="p0"><img src="https://king-newton.github.io/cards/jimmy-ch1.jpg"></div>
             <div class="face" id="p1"><img src="https://king-newton.github.io/cards/jimmy-en1.jpg"></div>
             <div class="face" id="p2"><img src="https://king-newton.github.io/cards/jimmy-ch2.jpg"></div>
             <div class="face" id="p3"><img src="https://king-newton.github.io/cards/jimmy-en2.jpg"></div>
         </div>
 
-        <div class="btn-list">
-            <a href="#" class="btn">公司官網</a>
-            <a href="https://king-newton.github.io/cards/contact-jimmy.vcf" class="btn">加入通訊錄</a>
+        <div class="btn-list" style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
+            <a href="#" class="btn" style="background: rgba(255, 255, 255, 0.08); padding: 14px; border-radius: 10px; text-align: center; color: white; text-decoration: none; border: 1px solid rgba(255,255,255,0.15);">公司官網</a>
+            <a href="https://king-newton.github.io/cards/contact-jimmy.vcf" class="btn" style="background: rgba(255, 255, 255, 0.08); padding: 14px; border-radius: 10px; text-align: center; color: white; text-decoration: none; border: 1px solid rgba(255,255,255,0.15);">加入通訊錄</a>
         </div>
     </div>
 
     <script>
-        // 自動全螢幕提示 (使用者點擊網頁任一處觸發)
-        document.body.addEventListener('click', function() {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen().catch(err => {});
-            }
-        });
-
         let current = 0;
         const map = { 0: { left: 2, right: 1 }, 1: { left: 3, right: 0 }, 2: { left: 3, right: 0 }, 3: { left: 2, right: 1 } };
         function navigate(dir) {
