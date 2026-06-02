@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>李彥綸 - AI 數位入口</title>
+    <style>
+        html, body { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; background-color: #0f172a; color: white; font-family: sans-serif; }
+        body { display: flex; flex-direction: column; align-items: center; padding: 20px; box-sizing: border-box; }
+
+        /* 頭像區 (移除了 QR Code，頭像置中) */
+        .profile-section { margin-bottom: 25px; text-align: center; }
+        .profile-pic { width: 110px; height: 110px; border-radius: 50%; object-fit: cover; border: 3px solid rgba(255,255,255,0.2); }
+
+        /* 名片區 */
+        .card-container { position: relative; width: 100%; max-width: 350px; aspect-ratio: 1.7 / 1; cursor: pointer; margin-bottom: 25px; }
+        .face { position: absolute; width: 100%; height: 100%; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.5); display: none; }
+        .face.active { display: block; }
+        .card-container img { width: 100%; height: 100%; object-fit: cover; }
+        .nav-left, .nav-right { position: absolute; top: 0; width: 50%; height: 100%; z-index: 10; }
+        .nav-left { left: 0; } .nav-right { right: 0; }
+
+        /* 列表式按鈕區 */
+        .btn-list { display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 350px; }
+        .btn { background: rgba(255, 255, 255, 0.08); padding: 16px; border-radius: 12px; text-align: center; text-decoration: none; color: white; font-size: 16px; font-weight: 500; border: 1px solid rgba(255,255,255,0.15); transition: 0.3s; }
+        .btn:active { background: rgba(255, 255, 255, 0.2); }
+    </style>
+</head>
+<body>
+
+    <!-- 頭像 -->
+    <div class="profile-section">
+        <img src="https://king-newton.github.io/cards/pic-jimmy.jpg" alt="個人照" class="profile-pic">
+    </div>
+
+    <!-- 名片翻轉 -->
+    <div class="card-container">
+        <div class="nav-left" onclick="navigate('left')"></div>
+        <div class="nav-right" onclick="navigate('right')"></div>
+        <div class="face active" id="p0"><img src="https://king-newton.github.io/cards/jimmy-ch1.jpg"></div>
+        <div class="face" id="p1"><img src="https://king-newton.github.io/cards/jimmy-en1.jpg"></div>
+        <div class="face" id="p2"><img src="https://king-newton.github.io/cards/jimmy-ch2.jpg"></div>
+        <div class="face" id="p3"><img src="https://king-newton.github.io/cards/jimmy-en2.jpg"></div>
+    </div>
+
+    <!-- 功能導航列表 -->
+    <div class="btn-list">
+        <a href="#" class="btn">公司官網</a>
+        <a href="#" class="btn">最新 AI 上位機產品</a>
+        <a href="https://king-newton.github.io/cards/contact-jimmy.vcf" class="btn">加入通訊錄</a>
+    </div>
+
+    <script>
+        let current = 0;
+        const map = { 0: { left: 2, right: 1 }, 1: { left: 3, right: 0 }, 2: { left: 3, right: 0 }, 3: { left: 2, right: 1 } };
+        function navigate(dir) {
+            document.getElementById('p' + current).classList.remove('active');
+            current = map[current][dir];
+            document.getElementById('p' + current).classList.add('active');
+        }
+    </script>
+</body>
+</html>
