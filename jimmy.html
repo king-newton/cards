@@ -14,7 +14,7 @@
             background-color: #f4f4f4; 
         }
 
-        /* 將連結設為區塊，讓整個名片區域都可以點擊 */
+        /* 讓整個名片區域成為可點擊的下載連結 */
         .vcf-link { 
             display: block; 
             text-decoration: none; 
@@ -22,7 +22,7 @@
             cursor: pointer; 
         }
 
-        /* 翻轉卡片容器 */
+        /* 卡片翻轉容器設定 */
         .flip-card { 
             background-color: transparent; 
             width: 320px; 
@@ -38,21 +38,23 @@
             transform-style: preserve-3d; 
         }
 
-        /* 當滑鼠移到容器上，觸發翻轉 */
+        /* 滑鼠移入時，將容器旋轉 180 度 */
         .flip-card:hover .flip-card-inner { 
             transform: rotateY(180deg); 
         }
 
+        /* 設定卡片前後面的樣式 */
         .flip-card-front, .flip-card-back { 
             position: absolute; 
             width: 100%; 
             height: 100%; 
-            backface-visibility: hidden; 
+            backface-visibility: hidden; /* 旋轉時隱藏背面 */
             border-radius: 15px;
             overflow: hidden;
             box-shadow: 0 8px 16px rgba(0,0,0,0.2);
         }
 
+        /* 背面預設先旋轉好，等待滑鼠移入翻轉 */
         .flip-card-back { 
             transform: rotateY(180deg); 
         }
@@ -67,12 +69,15 @@
 </head>
 <body>
 
+    <!-- 連結指向您的 vcf 檔案 -->
     <a href="https://king-newton.github.io/cards/contact-jimmy.vcf" class="vcf-link">
         <div class="flip-card">
             <div class="flip-card-inner">
+                <!-- 正面顯示 ch1 -->
                 <div class="flip-card-front">
                     <img src="https://king-newton.github.io/cards/jimmy-ch1.jpg" alt="名片正面">
                 </div>
+                <!-- 背面顯示 ch2 -->
                 <div class="flip-card-back">
                     <img src="https://king-newton.github.io/cards/jimmy-ch2.jpg" alt="名片背面">
                 </div>
