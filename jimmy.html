@@ -2,14 +2,19 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- 加入 fixed 設定，防止手機瀏覽器縮放或反彈 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>李彥綸 - 數位名片</title>
     <style>
-        /* 移除垂直置中，改為從頂部開始排列，防止名片被推到螢幕外 */
+        /* 強制移除所有捲動與邊界空間 */
+        html, body { 
+            margin: 0; padding: 0; height: 100%; width: 100%; 
+            overflow: hidden; background-color: #f4f4f4; 
+        }
+
         body { 
-            margin: 0; min-height: 100vh; display: flex; 
-            justify-content: center; align-items: flex-start; 
-            background-color: #f4f4f4; padding: 15px; box-sizing: border-box; 
+            display: flex; justify-content: center; align-items: center; 
+            box-sizing: border-box; padding: 10px; 
         }
 
         .container { 
@@ -18,7 +23,7 @@
         }
 
         .qr-section { flex: 1; max-width: 200px; }
-        .qr-section img { width: 100%; border-radius: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .qr-section img { width: 100%; border-radius: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); display: block; }
         
         .card-container { flex: 2; position: relative; width: 100%; aspect-ratio: 1.7 / 1; }
         .face { position: absolute; width: 100%; height: 100%; border-radius: 15px; overflow: hidden; box-shadow: 0 8px 16px rgba(0,0,0,0.3); display: none; }
@@ -28,9 +33,11 @@
         .nav-left { position: absolute; left: 0; top: 0; width: 50%; height: 100%; cursor: pointer; z-index: 10; }
         .nav-right { position: absolute; right: 0; top: 0; width: 50%; height: 100%; cursor: pointer; z-index: 10; }
 
+        /* 手機版設定：強制垂直排列且不留捲動空間 */
         @media (max-width: 600px) {
-            .container { flex-direction: column; gap: 15px; }
-            .qr-section { max-width: 120px; } /* 手機版稍微縮小，確保名片能顯示 */
+            body { align-items: center; } /* 在手機上垂直置中，避免上方留白 */
+            .container { flex-direction: column; gap: 10px; }
+            .qr-section { max-width: 100px; } 
             .card-container { width: 100%; }
         }
     </style>
@@ -39,10 +46,10 @@
 
     <div class="container">
         <div class="qr-section">
-    <a href="https://king-newton.github.io/cards/contact-jimmy.vcf">
-        <img src="King-Newton.png" alt="儲存聯絡人">
-    </a>
-</div>
+            <a href="https://king-newton.github.io/cards/contact-jimmy.vcf">
+                <img src="https://king-newton.github.io/cards/King-Newton.png" alt="儲存聯絡人">
+            </a>
+        </div>
 
         <div class="card-container">
             <div class="nav-left" onclick="navigate('left')"></div>
