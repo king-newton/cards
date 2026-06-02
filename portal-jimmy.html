@@ -5,25 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>李彥綸 - AI 數位入口</title>
     <style>
-        /* 強制所有元素納入盒模型，避免超出邊界 */
         * { box-sizing: border-box; }
         
+        /* 鎖定寬度，禁止左右滑動 */
         html, body { 
             margin: 0; padding: 0; height: 100vh; width: 100vw; 
-            overflow: hidden; background-color: #0f172a; color: white; font-family: sans-serif; 
+            overflow-x: hidden; overflow-y: auto; background-color: #0f172a; color: white; font-family: sans-serif; 
         }
         
         body { 
             display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            padding: 20px; /* 這裡保留一點邊距，讓內容不貼死螢幕 */
+            padding: 20px;
         }
 
         .main-wrapper { 
             width: 100%; max-width: 350px; display: flex; flex-direction: column; align-items: center; 
         }
 
-        /* 頭像與姓名 */
-        .profile-section { display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; }
+        /* 頭像區塊 (加入 cursor: pointer 提示可點擊) */
+        .profile-section { display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; cursor: pointer; }
         .profile-pic { width: 90px; height: 90px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.2); object-fit: cover; }
         .name-tag { margin-top: 10px; font-size: 18px; font-weight: bold; }
 
@@ -37,17 +37,15 @@
         .btn-list { display: flex; flex-direction: column; gap: 12px; width: 100%; }
         .btn { background: rgba(255, 255, 255, 0.08); padding: 14px; border-radius: 10px; text-align: center; color: white; text-decoration: none; border: 1px solid rgba(255,255,255,0.15); font-size: 15px; }
 
-        /* 橫式滿版模式 */
+        /* 橫式滿版 */
         @media (orientation: landscape) and (max-width: 900px) {
             body { padding: 0 !important; }
             .btn-list { display: none !important; }
-            
             .profile-section { 
                 position: fixed; top: 10px; left: 10px; z-index: 100; 
                 margin-bottom: 0 !important; transform: scale(0.5); 
             }
             .name-tag { display: none; }
-
             .card-container { 
                 max-width: 100vw !important; width: 100vw !important; height: 100vh !important; 
                 margin: 0 !important; border-radius: 0 !important; aspect-ratio: auto !important; 
@@ -60,7 +58,8 @@
 <body>
 
     <div class="main-wrapper">
-        <div class="profile-section">
+        <!-- 點擊頭像觸發全螢幕 -->
+        <div class="profile-section" id="profileBtn">
             <img src="https://king-newton.github.io/cards/pic-jimmy.jpg" class="profile-pic">
             <div class="name-tag">李彥綸 (Jimmy)</div>
         </div>
@@ -68,7 +67,6 @@
         <div class="card-container">
             <div style="position:absolute; top:0; left:0; width:50%; height:100%; z-index:10;" onclick="navigate('left')"></div>
             <div style="position:absolute; top:0; right:0; width:50%; height:100%; z-index:10;" onclick="navigate('right')"></div>
-            
             <div class="face active" id="p0"><img src="https://king-newton.github.io/cards/jimmy-ch1.jpg"></div>
             <div class="face" id="p1"><img src="https://king-newton.github.io/cards/jimmy-en1.jpg"></div>
             <div class="face" id="p2"><img src="https://king-newton.github.io/cards/jimmy-ch2.jpg"></div>
@@ -83,7 +81,8 @@
     </div>
 
     <script>
-        document.body.addEventListener('click', function() {
+        // 改為點擊頭像觸發全螢幕
+        document.getElementById('profileBtn').addEventListener('click', function() {
             if (!document.fullscreenElement) {
                 document.documentElement.requestFullscreen().catch(err => {});
             }
