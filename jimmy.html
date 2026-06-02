@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>李彥輪 - 數位名片</title>
+    <title>李彥綸 - 數位名片</title>
     <style>
         body { font-family: sans-serif; text-align: center; padding: 20px; background-color: #f4f4f4; }
+        
+        /* 移除預設連結樣式 */
+        .vcf-link { display: block; text-decoration: none; width: 300px; margin: auto; }
         
         /* 翻轉卡片容器 */
         .flip-card { background-color: transparent; width: 300px; height: 180px; margin: auto; perspective: 1000px; cursor: pointer; }
@@ -15,30 +18,28 @@
         .flip-card-back { transform: rotateY(180deg); }
         
         img { width: 100%; height: 100%; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
-        .btn { display: inline-block; padding: 15px 30px; background-color: #fca311; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; margin-top: 50px; }
     </style>
 </head>
 <body>
 
-    <h3>點擊名片即可翻面</h3>
-    
-    <div class="flip-card" onclick="this.classList.toggle('active')">
-        <div class="flip-card-inner">
-            <div class="flip-card-front">
-                <img src="jimmy-ch1.jpg" alt="名片正面">
-            </div>
-            <div class="flip-card-back">
-                <img src="jimmy-ch2.jpg" alt="名片背面">
+    <!-- 將連結包覆在名片容器外 -->
+    <a href="https://king-newton.github.io/cards/contact-jimmy.vcf" class="vcf-link">
+        <div class="flip-card" onclick="this.classList.toggle('active')">
+            <div class="flip-card-inner">
+                <div class="flip-card-front">
+                    <img src="https://king-newton.github.io/cards/jimmy-ch1.jpg" alt="名片正面">
+                </div>
+                <div class="flip-card-back">
+                    <img src="https://king-newton.github.io/cards/jimmy-ch2.jpg" alt="名片背面">
+                </div>
             </div>
         </div>
-    </div>
-
-    <br>
-    <a href="contact.vcf" class="btn">儲存聯絡人到手機</a>
+    </a>
 
     <script>
-        // 可選：若要在手機上更靈敏，這段 JavaScript 確保點擊有效
-        document.querySelector('.flip-card').addEventListener('click', function() {
+        // 為了防止點擊卡片翻轉時同時觸發連結下載，可加入以下邏輯：
+        document.querySelector('.flip-card').addEventListener('click', function(e) {
+            e.preventDefault(); // 阻止連結跳轉
             this.classList.toggle('active');
         });
     </script>
