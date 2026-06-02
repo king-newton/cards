@@ -1,4 +1,4 @@
-const CACHE_NAME = 'jimmy-cards-v3'; // 每次更新網頁內容時，請修改這裡的版次 (例如 v2, v3)
+const CACHE_NAME = 'jimmy-cards-v4'; // 每次更新網頁內容時，請修改這裡的版次 (例如 v2, v3)
 const ASSETS = [
   './',
   './index.html',
