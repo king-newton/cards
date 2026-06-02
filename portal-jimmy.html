@@ -5,42 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>李彥綸 - AI 數位入口</title>
     <style>
-        html, body { margin: 0; padding: 20px; height: 100%; width: 100%; overflow: hidden; background-color: #0f172a; color: white; font-family: sans-serif; }
+        /* 強制去除邊界 */
+        html, body { margin: 0; padding: 0; height: 100vh; width: 100vw; overflow: hidden; background-color: #0f172a; color: white; font-family: sans-serif; }
         body { display: flex; flex-direction: column; align-items: center; justify-content: center; box-sizing: border-box; }
 
         .main-wrapper { position: relative; width: 100%; max-width: 350px; display: flex; flex-direction: column; align-items: center; }
 
-        /* 個人資訊區 */
+        /* 個人區 */
         .profile-section { display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; }
         .profile-pic { width: 90px; height: 90px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.2); object-fit: cover; }
-        .name-tag { margin-top: 10px; font-size: 18px; font-weight: bold; letter-spacing: 1px; }
+        .name-tag { margin-top: 10px; font-size: 18px; font-weight: bold; }
 
         /* 名片區 */
         .card-container { position: relative; width: 100%; aspect-ratio: 1.7 / 1; cursor: pointer; margin-bottom: 20px; }
-        .face { position: absolute; width: 100%; height: 100%; border-radius: 12px; overflow: hidden; display: none; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .face { position: absolute; width: 100%; height: 100%; border-radius: 12px; overflow: hidden; display: none; }
         .face.active { display: block; }
         .face img { width: 100%; height: 100%; object-fit: cover; }
         
         .nav-left, .nav-right { position: absolute; top: 0; width: 50%; height: 100%; z-index: 10; }
-        .nav-left { left: 0; } .nav-right { right: 0; }
 
         /* 按鈕區 */
         .btn-list { display: flex; flex-direction: column; gap: 12px; width: 100%; }
-        .btn { background: rgba(255, 255, 255, 0.08); padding: 14px; border-radius: 10px; text-align: center; color: white; text-decoration: none; border: 1px solid rgba(255,255,255,0.15); font-size: 15px; }
+        .btn { background: rgba(255, 255, 255, 0.08); padding: 14px; border-radius: 10px; text-align: center; color: white; text-decoration: none; border: 1px solid rgba(255,255,255,0.15); }
 
-        /* 橫式滿版 - 強制全螢幕 */
+        /* 橫式滿版 */
         @media (orientation: landscape) and (max-width: 900px) {
-            body { padding: 0 !important; justify-content: flex-start !important; }
+            body { padding: 0 !important; }
             .profile-section, .btn-list { display: none !important; }
-            .main-wrapper { max-width: 100vw !important; width: 100vw !important; }
-            .card-container { 
-                max-width: 100vw !important; 
-                width: 100vw !important; 
-                height: 100vh !important; 
-                margin: 0 !important; 
-                border-radius: 0 !important; 
-                aspect-ratio: auto !important; 
-            }
+            .card-container { max-width: 100vw !important; height: 100vh !important; margin: 0 !important; border-radius: 0 !important; }
             .face { border-radius: 0 !important; }
             .face img { object-fit: contain !important; background: #000; }
         }
@@ -65,12 +57,18 @@
 
         <div class="btn-list">
             <a href="#" class="btn">公司官網</a>
-            <a href="#" class="btn">最新 AI 上位機產品</a>
             <a href="https://king-newton.github.io/cards/contact-jimmy.vcf" class="btn">加入通訊錄</a>
         </div>
     </div>
 
     <script>
+        // 自動全螢幕提示 (使用者點擊網頁任一處觸發)
+        document.body.addEventListener('click', function() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {});
+            }
+        });
+
         let current = 0;
         const map = { 0: { left: 2, right: 1 }, 1: { left: 3, right: 0 }, 2: { left: 3, right: 0 }, 3: { left: 2, right: 1 } };
         function navigate(dir) {
