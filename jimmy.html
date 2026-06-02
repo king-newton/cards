@@ -10,7 +10,8 @@
         .qr-section { flex: 1; max-width: 200px; }
         .qr-section img { width: 100%; border-radius: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
         
-        .card-container { flex: 2; position: relative; aspect-ratio: 1.7 / 1; }
+        /* 修正手機版塌陷問題 */
+        .card-container { flex: 2; position: relative; width: 100%; aspect-ratio: 1.7 / 1; }
         .face { position: absolute; width: 100%; height: 100%; border-radius: 15px; overflow: hidden; box-shadow: 0 8px 16px rgba(0,0,0,0.3); display: none; }
         .face.active { display: block; }
         img { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -21,7 +22,8 @@
 
         @media (max-width: 600px) {
             .container { flex-direction: column; }
-            .qr-section { max-width: 150px; }
+            .qr-section { max-width: 150px; margin-bottom: 10px; }
+            .card-container { width: 100%; }
         }
     </style>
 </head>
@@ -38,6 +40,7 @@
             <div class="nav-left" onclick="navigate('left')"></div>
             <div class="nav-right" onclick="navigate('right')"></div>
 
+            <!-- 名片四面 -->
             <div class="face active" id="p0"><img src="https://king-newton.github.io/cards/jimmy-ch1.jpg"></div>
             <div class="face" id="p1"><img src="https://king-newton.github.io/cards/jimmy-en1.jpg"></div>
             <div class="face" id="p2"><img src="https://king-newton.github.io/cards/jimmy-ch2.jpg"></div>
