@@ -5,45 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>李彥綸 - AI 數位入口</title>
     <style>
-        * { box-sizing: border-box; }
+        * { box-sizing: border-box; touch-action: manipulation; }
+        
         html, body { 
             margin: 0; padding: 10px; height: 100vh; width: 100vw; 
             overflow: hidden; background-color: #0f172a; color: white; font-family: sans-serif;
+            overscroll-behavior: none; display: flex; justify-content: center; align-items: center;
         }
-        body { display: flex; flex-direction: column; align-items: center; justify-content: center; }
 
         .main-wrapper { width: 100%; max-width: 350px; display: flex; flex-direction: column; align-items: center; }
 
-        /* 直式：大頭照在名字上方 */
-        .profile-section { display: flex; flex-direction: column; align-items: center; margin-bottom: 15px; cursor: pointer; }
-        .profile-pic { width: 85px; height: 85px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.2); object-fit: cover; }
+        /* 恢復上下排列 */
+        .profile-section { display: flex; flex-direction: column; align-items: center; margin-bottom: 12px; cursor: pointer; }
+        .profile-pic { width: 80px; height: 80px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.2); object-fit: cover; }
         .name-tag { margin-top: 8px; font-size: 18px; font-weight: bold; }
 
-        .card-container { position: relative; width: 100%; aspect-ratio: 1.7 / 1; cursor: pointer; margin-bottom: 15px; }
-        .face { position: absolute; width: 100%; height: 100%; border-radius: 12px; overflow: hidden; display: none; }
+        .card-container { position: relative; width: 100%; aspect-ratio: 1.7 / 1; cursor: pointer; margin-bottom: 15px; border-radius: 12px; overflow: hidden; }
+        .face { position: absolute; width: 100%; height: 100%; display: none; }
         .face.active { display: block; }
         .face img { width: 100%; height: 100%; object-fit: cover; }
         
         .btn-list { display: flex; flex-direction: column; gap: 8px; width: 100%; }
         .btn { background: rgba(255, 255, 255, 0.08); padding: 12px; border-radius: 10px; text-align: center; color: white; text-decoration: none; border: 1px solid rgba(255,255,255,0.15); font-size: 14px; }
 
-        /* 橫式：放大頭照至左上，名片保持完整 */
+        /* 橫式滿版懸浮 */
         @media (orientation: landscape) and (max-width: 900px) {
             body { padding: 0 !important; }
             .btn-list { display: none !important; }
-            
             .profile-section { 
-                position: fixed; top: 15px; left: 15px; z-index: 100; 
-                margin-bottom: 0 !important; transform: scale(1.0); /* 放回正常大小 */
+                position: fixed; top: 15px; left: 15px; z-index: 100; margin-bottom: 0; flex-direction: row; gap: 10px;
             }
-            .name-tag { display: none; } /* 橫式隱藏名字 */
-
-            .card-container { 
-                max-width: 100vw !important; width: 100vw !important; height: 100vh !important; 
-                margin: 0 !important; border-radius: 0 !important; aspect-ratio: auto !important; 
-            }
-            .face { border-radius: 0 !important; }
-            .face img { width: 100% !important; height: 100% !important; object-fit: contain !important; background: #000; }
+            .profile-pic { width: 50px; height: 50px; }
+            .name-tag { display: none; }
+            .card-container { max-width: 100vw !important; width: 100vw !important; height: 100vh !important; margin: 0 !important; border-radius: 0 !important; }
+            .face img { object-fit: contain !important; background: #000; }
         }
     </style>
 </head>
@@ -77,7 +72,6 @@
                 document.documentElement.requestFullscreen().catch(err => {});
             }
         });
-
         let current = 0;
         const map = { 0: { left: 2, right: 1 }, 1: { left: 3, right: 0 }, 2: { left: 3, right: 0 }, 3: { left: 2, right: 1 } };
         function navigate(dir) {
