@@ -6,45 +6,64 @@
     <title>李彥綸 - AI 數位入口</title>
     <style>
         * { box-sizing: border-box; touch-action: manipulation; }
-        html, body { margin: 0; padding: 0; height: 100dvh; width: 100vw; overflow: hidden; background-color: #0f172a; color: white; font-family: sans-serif; display: flex; justify-content: center; }
-
-        .main-wrapper { width: 100%; max-width: 400px; display: flex; flex-direction: column; padding: 20px; height: 100%; transition: max-width 0.3s; }
         
-        /* 電腦版優化 */
-        @media (min-width: 768px) { .main-wrapper { max-width: 600px; } }
+        html, body { 
+            margin: 0; padding: 0; height: 100vh; width: 100vw; 
+            overflow: hidden; background-color: #0f172a; color: white; font-family: sans-serif;
+            overscroll-behavior: none; display: flex; justify-content: center;
+        }
+
+        body { align-items: flex-start; padding-top: 40px; }
+
+        /* 過渡遮罩層（純點擊，無倒數） */
+        #overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: #0f172a; z-index: 10000;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            text-align: center; cursor: pointer;
+        }
+        .overlay-content { font-size: 18px; padding: 20px; }
+
+        .main-wrapper { width: 100%; max-width: 350px; display: flex; flex-direction: column; align-items: center; }
 
         .profile-section { display: flex; flex-direction: column; align-items: center; margin-bottom: 10px; cursor: pointer; }
         .profile-pic { width: 75px; height: 75px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.2); object-fit: cover; }
         .name-tag { margin-top: 5px; font-size: 17px; font-weight: bold; }
 
-        .card-container { flex-grow: 1; position: relative; width: 100%; margin: 10px 0; border-radius: 12px; overflow: hidden; display: flex; align-items: center; }
-        .face { position: absolute; width: 100%; height: 100%; display: none; align-items: center; justify-content: center; }
-        .face.active { display: flex; }
-        .face img { width: 100%; height: 100%; object-fit: contain; }
+        .card-container { 
+            position: relative; width: 100%; aspect-ratio: 1.7 / 1; 
+            cursor: pointer; margin-bottom: 10px; border-radius: 12px; overflow: hidden; 
+        }
         
- .btn-list { 
-    display: flex; 
-    flex-direction: column; 
-    gap: 12px; 
-    width: 100%; 
-    max-width: 400px; /* 強制按鈕區塊不超過 400px，維持手機般的視覺比例 */
-    margin: 0 auto;  /* 讓按鈕在寬螢幕下置中 */
-    margin-top: auto; 
-}
-        .btn { background: rgba(255, 255, 255, 0.08); padding: 12px; border-radius: 10px; text-align: center; color: white; text-decoration: none; border: 1px solid rgba(255,255,255,0.15); font-size: 14px; }
+        .face { position: absolute; width: 100%; height: 100%; display: none; }
+        .face.active { display: block; }
+        .face img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .btn-list { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+        .btn { background: rgba(255, 255, 255, 0.08); padding: 12px; border-radius: 10px; text-align: center; color: white; text-decoration: none; border: 1px solid rgba(255,255,255,0.15); font-size: 14px; cursor: pointer; }
 
-        /* 全螢幕引導層 */
-        #overlay { position: fixed; top:0; left:0; width:100vw; height:100dvh; background: #0f172a; z-index: 10000; display: flex; justify-content: center; align-items: center; cursor: pointer; }
-        #sliderView { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh; background: black; z-index: 9999; justify-content: center; align-items: center; }
-        #sliderImg { max-width: 100vw; max-height: 100dvh; object-fit: contain; }
+        #sliderView { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: black; z-index: 9999; justify-content: center; align-items: center; }
+        #sliderImg { max-width: 100vw; max-height: 100vh; object-fit: contain; }
+
+        /* 當手機或螢幕打橫時的樣式調整：呈現全螢幕名片 */
+        @media (orientation: landscape) and (max-width: 900px) {
+            body { align-items: center; padding-top: 0; }
+            .profile-section, .btn-list { display: none !important; }
+            .card-container { max-width: 100vw !important; width: 100vw !important; height: 100vh !important; margin: 0 !important; border-radius: 0 !important; }
+            .face img { object-fit: contain !important; background: #000; }
+        }
     </style>
 </head>
 <body>
 
-    <div id="overlay" onclick="enterApp()">點擊進入數位名片</div>
+    <div id="overlay" onclick="enterPortal()">
+        <div class="overlay-content">
+            <div style="font-size: 20px; letter-spacing: 1px;">點擊進入數位名片</div>
+        </div>
+    </div>
 
     <div class="main-wrapper">
-        <div class="profile-section">
+        <div class="profile-section" id="profileBtn">
             <img src="https://king-newton.github.io/cards/pic-jimmy.jpg" class="profile-pic">
             <div class="name-tag">李彥綸 (Jimmy)</div>
         </div>
@@ -52,6 +71,7 @@
         <div class="card-container">
             <div style="position:absolute; top:0; left:0; width:50%; height:100%; z-index:10;" onclick="navigate('left')"></div>
             <div style="position:absolute; top:0; right:0; width:50%; height:100%; z-index:10;" onclick="navigate('right')"></div>
+            
             <div class="face active" id="p0"><img src="https://king-newton.github.io/cards/jimmy-ch1.jpg"></div>
             <div class="face" id="p1"><img src="https://king-newton.github.io/cards/jimmy-en1.jpg"></div>
             <div class="face" id="p2"><img src="https://king-newton.github.io/cards/jimmy-ch2.jpg"></div>
@@ -61,19 +81,33 @@
         <div class="btn-list">
             <a href="#" class="btn">公司官網</a>
             <a href="#" class="btn">最新 AI 上位機產品</a>
-            <a href="#" class="btn" onclick="openSlider()">智慧綠能解決方案</a>
+            <a href="#" class="btn" onclick="openSlider(event)">智慧綠能解決方案</a>
             <a href="https://king-newton.github.io/cards/contact-jimmy.vcf" class="btn">加入通訊錄</a>
         </div>
     </div>
 
-    <div id="sliderView" onclick="nextSlide()"><img id="sliderImg" src=""></div>
+    <div id="sliderView" onclick="nextSlide()">
+        <img id="sliderImg" src="">
+    </div>
 
     <script>
-        function enterApp() {
-            document.getElementById('overlay').style.display = 'none';
-            document.documentElement.requestFullscreen().catch(err => {});
+        const overlay = document.getElementById('overlay');
+
+        // 修改點：點擊時觸發全螢幕，並直接隱藏遮罩，呈現您的個人入口網頁
+        function enterPortal() {
+            overlay.style.display = 'none';
+            requestFullScreen();
         }
-        
+
+        function requestFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log("全螢幕請求被瀏覽器拒絕，或需點擊觸發", err);
+                });
+            }
+        }
+
+        // 導覽切換邏輯
         let current = 0;
         const map = { 0: { left: 2, right: 1 }, 1: { left: 3, right: 0 }, 2: { left: 3, right: 0 }, 3: { left: 2, right: 1 } };
         function navigate(dir) {
@@ -82,13 +116,25 @@
             document.getElementById('p' + current).classList.add('active');
         }
 
+        // 綠能投影片輪播邏輯
         const slides = Array.from({length: 13}, (_, i) => `https://king-newton.github.io/cards/SGES${i+1}.jpg`);
         let slideIdx = 0;
-        function openSlider() { event.preventDefault(); document.getElementById('sliderView').style.display = 'flex'; document.getElementById('sliderImg').src = slides[slideIdx]; }
+
+        function openSlider(event) {
+            event.preventDefault();
+            const el = document.getElementById('sliderView');
+            el.style.display = 'flex';
+            document.getElementById('sliderImg').src = slides[slideIdx];
+        }
+
         function nextSlide() {
             slideIdx++;
-            if (slideIdx < slides.length) { document.getElementById('sliderImg').src = slides[slideIdx]; } 
-            else { slideIdx = 0; document.getElementById('sliderView').style.display = 'none'; }
+            if (slideIdx < slides.length) {
+                document.getElementById('sliderImg').src = slides[slideIdx];
+            } else {
+                slideIdx = 0;
+                document.getElementById('sliderView').style.display = 'none';
+            }
         }
     </script>
 </body>
