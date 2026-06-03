@@ -22,7 +22,15 @@
         .face.active { display: flex; }
         .face img { width: 100%; height: 100%; object-fit: contain; }
         
-        .btn-list { display: flex; flex-direction: column; gap: 8px; width: 100%; margin-top: auto; }
+ .btn-list { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 12px; 
+    width: 100%; 
+    max-width: 400px; /* 強制按鈕區塊不超過 400px，維持手機般的視覺比例 */
+    margin: 0 auto;  /* 讓按鈕在寬螢幕下置中 */
+    margin-top: auto; 
+}
         .btn { background: rgba(255, 255, 255, 0.08); padding: 12px; border-radius: 10px; text-align: center; color: white; text-decoration: none; border: 1px solid rgba(255,255,255,0.15); font-size: 14px; }
 
         /* 全螢幕引導層 */
