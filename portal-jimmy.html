@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>李彥綸 - AI 數位入口</title>
+    <title>李彥綸 - 數位名片</title>
     <style>
         * { box-sizing: border-box; touch-action: manipulation; }
         
@@ -42,7 +42,11 @@
         .btn-list { display: flex; flex-direction: column; gap: 8px; width: 100%; }
         .btn { background: rgba(255, 255, 255, 0.08); padding: 12px; border-radius: 10px; text-align: center; color: white; text-decoration: none; border: 1px solid rgba(255,255,255,0.15); font-size: 14px; cursor: pointer; }
 
-        /* 新增：最下方 QR Code 置中樣式 */
+        /* 新增：雙按鈕並排結構樣式 */
+        .btn-row { display: table; width: 100%; table-layout: fixed; border-collapse: separate; border-spacing: 8px 0; margin-left: -8px; width: calc(100% + 16px); }
+        .btn-cell { display: table-cell; }
+
+        /* 最下方 QR Code 置中樣式 */
         .qr-bottom-section {
             margin-top: 20px;
             margin-bottom: 20px;
@@ -99,7 +103,15 @@
             <a href="https://www.king-newton.com" class="btn">公司官網</a>
             <a href="#" class="btn">最新 AI 上位機產品</a>
             <a href="#" class="btn" onclick="openSlider(event)">智慧綠能解決方案</a>
-            <a href="https://king-newton.github.io/cards/contact-jimmy.vcf" class="btn">加入通訊錄</a>
+            
+            <div class="btn-row">
+                <div class="btn-cell">
+                    <a href="https://king-newton.github.io/cards/contact-jimmy.vcf" class="btn" style="display: block;">加入通訊錄 (中)</a>
+                </div>
+                <div class="btn-cell">
+                    <a href="https://king-newton.github.io/cards/contact-jimmy-en.vcf" class="btn" style="display: block;">Save Contacts (EN)</a>
+                </div>
+            </div>
         </div>
 
         <div class="qr-bottom-section">
@@ -116,7 +128,6 @@
     <script>
         const overlay = document.getElementById('overlay');
 
-        // 修改點：點擊時觸發全螢幕，並直接隱藏遮罩，呈現您的個人入口網頁
         function enterPortal() {
             overlay.style.display = 'none';
             requestFullScreen();
@@ -130,7 +141,6 @@
             }
         }
 
-        // 導覽切換邏輯
         let current = 0;
         const map = { 0: { left: 2, right: 1 }, 1: { left: 3, right: 0 }, 2: { left: 3, right: 0 }, 3: { left: 2, right: 1 } };
         function navigate(dir) {
@@ -139,7 +149,6 @@
             document.getElementById('p' + current).classList.add('active');
         }
 
-        // 綠能投影片輪播邏輯
         const slides = Array.from({length: 13}, (_, i) => `https://king-newton.github.io/cards/SGES${i+1}.jpg`);
         let slideIdx = 0;
 
