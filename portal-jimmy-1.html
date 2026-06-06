@@ -47,14 +47,14 @@
         .btn-row { display: table; width: 100%; table-layout: fixed; border-collapse: separate; border-spacing: 8px 0; margin-left: -8px; width: calc(100% + 16px); }
         .btn-cell { display: table-cell; }
 
-        /* --- 【優化】當啟動手機全螢幕模式時，直接透過 body 的 class 來控制整個網頁的外觀 --- */
+        /* --- 手機全螢幕模式樣式（隱藏其他元素，名片滿版） --- */
         body.phone-fullscreen-mode {
             align-items: center !important;
             padding-top: 0 !important;
         }
         body.phone-fullscreen-mode .profile-section,
         body.phone-fullscreen-mode .btn-list {
-            display: none !important; /* 隱藏其他物件，避免重疊 */
+            display: none !important; 
         }
         body.phone-fullscreen-mode .card-container {
             position: fixed !important;
@@ -71,7 +71,7 @@
             background: #000;
         }
 
-        /* --- 【電腦寬螢幕】點擊放大：不旋轉，直接直式等比例放大 --- */
+        /* --- 電腦寬螢幕點擊放大樣式（直式等比例放大） --- */
         .card-container.fullscreen-pc {
             position: fixed !important;
             top: 50% !important;
@@ -91,28 +91,10 @@
             background: #000;
         }
 
-        /* 提示關閉的文字 */
-        .close-tip {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            background: rgba(0,0,0,0.6);
-            padding: 6px 12px;
-            font-size: 12px;
-            border-radius: 4px;
-            z-index: 100;
-            display: none;
-            pointer-events: none;
-        }
-        body.phone-fullscreen-mode .close-tip,
-        .card-container.fullscreen-pc .close-tip {
-            display: block;
-        }
-
         #sliderView { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: black; z-index: 9999; justify-content: center; align-items: center; }
         #sliderImg { max-width: 100vw; max-height: 100vh; object-fit: contain; }
 
-        /* 當手機或螢幕【物理打橫】時的樣式調整（維持原樣，但融合新機制） */
+        /* 當手機或螢幕【物理打橫】時的樣式調整 */
         @media (orientation: landscape) and (max-width: 900px) {
             body { align-items: center; padding-top: 0; }
             .profile-section, .btn-list { display: none !important; }
@@ -136,7 +118,6 @@
         </div>
 
         <div class="card-container" id="myCard">
-            <div class="close-tip">✕ 點擊任意處返回</div>
             <div style="position:absolute; top:0; left:0; width:30%; height:100%; z-index:10;" onclick="handleCardClick('left', event)"></div>
             <div style="position:absolute; top:0; right:0; width:30%; height:100%; z-index:10;" onclick="handleCardClick('right', event)"></div>
             <div style="position:absolute; top:0; left:30%; width:40%; height:100%; z-index:10;" onclick="handleCardClick('center', event)"></div>
@@ -198,12 +179,12 @@
             document.getElementById('p' + current).classList.add('active');
         }
 
-        // 修改：優化後的智慧切換邏輯
+        // 智慧切換邏輯
         function handleCardClick(zone, event) {
             event.stopPropagation();
             const card = document.getElementById('myCard');
             
-            // 情況 A：如果目前已經是「手機全螢幕」或「電腦全螢幕」狀態，點擊任何地方都是關閉回到常規直式
+            // 如果目前已經是全螢幕狀態，點擊任何地方都是關閉並退回常規模式
             if (document.body.classList.contains('phone-fullscreen-mode') || card.classList.contains('fullscreen-pc')) {
                 document.body.classList.remove('phone-fullscreen-mode');
                 card.classList.remove('fullscreen-pc');
@@ -216,13 +197,12 @@
             } else if (zone === 'right') {
                 navigate('right');
             } else if (zone === 'center') {
-                // 點擊中間時，判斷目前是電腦（寬螢幕）還是手機（直螢幕）
+                // 判斷目前是電腦（寬螢幕）還是手機（直螢幕）
                 if (window.innerWidth > window.innerHeight) {
-                    // 1. 電腦版：直接直式等比例放大，不旋轉
+                    // 1. 電腦版：直接直式等比例放大
                     card.classList.add('fullscreen-pc');
                 } else {
-                    // 2. 手機直式版：直接隱藏其他內容，將名片放大填滿
-                    // 因為名片原圖本來就是橫的，用 contain 放入全螢幕會自動完美呈現橫向滿版
+                    // 2. 手機直式版：直接隱藏其他內容，名片放大填滿螢幕
                     document.body.classList.add('phone-fullscreen-mode');
                 }
             }
