@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>李彥綸 - 數位名片</title>
+    <style>
+        * { box-sizing: border-box; touch-action: manipulation; }
+        
+        html, body { 
+            margin: 0; padding: 0; height: 100vh; width: 100vw; 
+            overflow: hidden; background-color: #0f172a; color: white; font-family: sans-serif;
+            overscroll-behavior: none; display: flex; justify-content: center;
+        }
+
+        body { align-items: flex-start; padding-top: 40px; }
+
+        /* 過渡遮罩層（純點擊，無倒數） */
+        #overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: #0f172a; z-index: 10000;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            text-align: center; cursor: pointer;
+        }
+        .overlay-content { font-size: 18px; padding: 20px; }
+
+        .main-wrapper { width: 100%; max-width: 350px; display: flex; flex-direction: column; align-items: center; }
+
+        .profile-section { display: flex; flex-direction: column; align-items: center; margin-bottom: 10px; cursor: pointer; }
+        .profile-pic { width: 75px; height: 75px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.2); object-fit: cover; }
+        .name-tag { margin-top: 5px; font-size: 17px; font-weight: bold; }
+
+        .card-container { 
+            position: relative; width: 100%; aspect-ratio: 1.7 / 1; 
+            cursor: pointer; margin-bottom: 10px; border-radius: 12px; overflow: hidden; 
+            transition: transform 0.3s ease, width 0.3s ease, height 0.3s ease;
+        }
+        
+        .face { position: absolute; width: 100%; height: 100%; display: none; }
+        .face.active { display: block; }
+        .face img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .btn-list { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+        .btn { background: rgba(255, 255, 255, 0.08); padding: 12px; border-radius: 10px; text-align: center; color: white; text-decoration: none; border: 1px solid rgba(255,255,255,0.15); font-size: 14px; cursor: pointer; }
+
+        /* 雙按鈕並排結構樣式 */
+        .btn-row { display: table; width: 100%; table-layout: fixed; border-collapse: separate; border-spacing: 8px 0; margin-left: -8px; width: calc(100% + 16px); }
+        .btn-cell { display: table-cell; }
+
+        /* --- 【手機直式】點擊放大：旋轉 90 度變成橫向全螢幕 --- */
+        .card-container.fullscreen-mobile {
+            position: fixed !important;
+            top: 50% !important;
+            left: 50% !important;
+            width: 100vh !important; 
+            height: 100vw !important; 
+            max-width: none !important;
+            margin: 0 !important;
+            border-radius: 0 !important;
+            z-index: 99999 !important;
+            transform: translate(-50%, -50%) rotate(90deg) !important; 
+        }
+
+        /* --- 【電腦寬螢幕】點擊放大：不旋轉，直接直式等比例放大 --- */
+        .card-container.fullscreen-pc {
+            position: fixed !important;
+            top: 50% !important;
+            left: 50% !important;
+            width: auto !important;
+            height: 90vh !important; /* 讓高度佔滿螢幕的 90% */
+            aspect-ratio: 1.7 / 1 !important; /* 保持原本名片比例 */
+            max-width: none !important;
+            margin: 0 !important;
+            border-radius: 12px !important; /* 電腦版保留一點圓角比較精緻 */
+            z-index: 99999 !important;
+            transform: translate(-50%, -50%) !important; /* 只置中，不旋轉 */
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+        }
+
+        /* 全螢幕狀態下的圖片縮放調整 */
+        .card-container.fullscreen-mobile .face img,
+        .card-container.fullscreen-pc .face img {
+            object-fit: contain !important;
+            background: #000;
+        }
+
+        /* 提示關閉的文字 */
+        .close-tip {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(0,0,0,0.6);
+            padding: 6px 12px;
+            font-size: 12px;
+            border-radius: 4px;
+            z-index: 100;
+            display: none;
+            pointer-events: none;
+        }
+        .card-container.fullscreen-mobile .close-tip {
+            display: block;
+            transform: rotate(-90deg); /* 手機版文字跟著轉回來方便閱讀 */
+            transform-origin: left top;
+            position: absolute;
+            top: 40px; left: 15px;
+        }
+        .card-container.fullscreen-pc .close-tip {
+            display: block;
+        }
+
+        #sliderView { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: black; z-index: 9999; justify-content: center; align-items: center; }
+        #sliderImg { max-width: 100vw; max-height: 100vh; object-fit: contain; }
+
+        /* 當手機或螢幕【物理打橫】時的樣式調整 */
+        @media (orientation: landscape) and (max-width: 900px) {
+            body { align-items: center; padding-top: 0; }
+            .profile-section, .btn-list { display: none !important; }
+            .card-container { max-width: 100vw !important; width: 100vw !important; height: 100vh !important; margin: 0 !important; border-radius: 0 !important; }
+            .face img { object-fit: contain !important; background: #000; }
+            /* 如果物理上已經打橫了，清除所有 JS 點擊放大的 class 效果 */
+            .card-container.fullscreen-mobile, .card-container.fullscreen-pc { transform: none !important; width: 100vw !important; height: 100vh !important; top: 0 !important; left: 0 !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="overlay" onclick="enterPortal()">
+        <div class="overlay-content">
+            <div style="font-size: 20px; letter-spacing: 1px;">Click to enter digital business card<BR>點擊進入數位名片</div>
+        </div>
+    </div>
+
+    <div class="main-wrapper">
+        <div class="profile-section" id="profileBtn">
+            <img src="https://king-newton.github.io/cards/pic-jimmy.jpg" class="profile-pic">
+            <div class="name-tag">李彥綸 (Jimmy)</div>
+        </div>
+
+        <div class="card-container" id="myCard">
+            <div class="close-tip">✕ 點擊任意處返回</div>
+            <div style="position:absolute; top:0; left:0; width:30%; height:100%; z-index:10;" onclick="handleCardClick('left', event)"></div>
+            <div style="position:absolute; top:0; right:0; width:30%; height:100%; z-index:10;" onclick="handleCardClick('right', event)"></div>
+            <div style="position:absolute; top:0; left:30%; width:40%; height:100%; z-index:10;" onclick="handleCardClick('center', event)"></div>
+            
+            <div class="face active" id="p0"><img src="https://king-newton.github.io/cards/jimmy-ch1.jpg"></div>
+            <div class="face" id="p1"><img src="https://king-newton.github.io/cards/jimmy-en1.jpg"></div>
+            <div class="face" id="p2"><img src="https://king-newton.github.io/cards/jimmy-ch2.jpg"></div>
+            <div class="face" id="p3"><img src="https://king-newton.github.io/cards/jimmy-en2.jpg"></div>
+        </div>
+
+        <div class="btn-list">
+            <a href="https://www.king-newton.com" class="btn">公司官網</a>
+            <a href="#" class="btn">最新 AI 上位機產品</a>
+            <a href="#" class="btn" onclick="openSlider(event)">智慧綠能解決方案</a>
+            
+           <div class="btn-row" style="margin-top: 20px; margin-bottom: 20px; text-align: center;">
+                <div class="btn-cell" style="text-align: center;">
+                    <a href="https://king-newton.github.io/cards/contact-jimmy.vcf">
+                        <img src="https://king-newton.github.io/cards/King-Newton.png" alt="儲存中文聯絡人" style="width: 110px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5); transition: transform 0.2s;">
+                    </a>
+                    <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">中文版通訊錄</div>
+                </div>
+                <div class="btn-cell" style="text-align: center;">
+                    <a href="https://king-newton.github.io/cards/contact-jimmy-en.vcf">
+                        <img src="https://king-newton.github.io/cards/King-Newton-en.png" alt="Save EN Contacts" style="width: 110px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5); transition: transform 0.2s;">
+                    </a>
+                    <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">English VCF</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="sliderView" onclick="nextSlide()">
+        <img id="sliderImg" src="">
+    </div>
+
+    <script>
+        const overlay = document.getElementById('overlay');
+
+        function enterPortal() {
+            overlay.style.display = 'none';
+            requestFullScreen();
+        }
+
+        function requestFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log("全螢幕請求被瀏覽器拒絕，或需點擊觸發", err);
+                });
+            }
+        }
+
+        let current = 0;
+        const map = { 0: { left: 2, right: 1 }, 1: { left: 3, right: 0 }, 2: { left: 3, right: 0 }, 3: { left: 2, right: 1 } };
+        
+        function navigate(dir) {
+            document.getElementById('p' + current).classList.remove('active');
+            current = map[current][dir];
+            document.getElementById('p' + current).classList.add('active');
+        }
+
+        // 修改：智慧判斷裝置並處理全螢幕
+        function handleCardClick(zone, event) {
+            event.stopPropagation();
+            const card = document.getElementById('myCard');
+            
+            // 如果目前已經是全螢幕狀態，點擊任何地方都是關閉
+            if (card.classList.contains('fullscreen-mobile') || card.classList.contains('fullscreen-pc')) {
+                card.classList.remove('fullscreen-mobile', 'fullscreen-pc');
+                return;
+            }
+
+            // 常規兩側切換
+            if (zone === 'left') {
+                navigate('left');
+            } else if (zone === 'right') {
+                navigate('right');
+            } else if (zone === 'center') {
+                // 點擊中間時，判斷目前是電腦（寬螢幕）還是手機（直螢幕）
+                // window.innerWidth > window.innerHeight 代表寬度大於高度（電腦版或手機已打橫）
+                if (window.innerWidth > window.innerHeight) {
+                    // 電腦版：直接直式等比例放大，不旋轉
+                    card.classList.add('fullscreen-pc');
+                } else {
+                    // 手機直式版：強制旋轉 90 度放大
+                    card.classList.add('fullscreen-mobile');
+                }
+            }
+        }
+
+        const slides = Array.from({length: 13}, (_, i) => `https://king-newton.github.io/cards/SGES${i+1}.jpg`);
+        let slideIdx = 0;
+
+        function openSlider(event) {
+            event.preventDefault();
+            const el = document.getElementById('sliderView');
+            el.style.display = 'flex';
+            document.getElementById('sliderImg').src = slides[slideIdx];
+        }
+
+        function nextSlide() {
+            slideIdx++;
+            if (slideIdx < slides.length) {
+                document.getElementById('sliderImg').src = slides[slideIdx];
+            } else {
+                slideIdx = 0;
+                document.getElementById('sliderView').style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
