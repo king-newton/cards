@@ -15,7 +15,6 @@
 
         body { align-items: flex-start; padding-top: 40px; }
 
-        /* 過渡遮罩層（純點擊，無倒數） */
         #overlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: #0f172a; z-index: 10000;
@@ -33,7 +32,6 @@
         .card-container { 
             position: relative; width: 100%; aspect-ratio: 1.7 / 1; 
             cursor: pointer; margin-bottom: 10px; border-radius: 12px; overflow: hidden; 
-            transition: all 0.3s ease;
         }
         
         .face { position: absolute; width: 100%; height: 100%; display: none; }
@@ -43,61 +41,15 @@
         .btn-list { display: flex; flex-direction: column; gap: 8px; width: 100%; }
         .btn { background: rgba(255, 255, 255, 0.08); padding: 12px; border-radius: 10px; text-align: center; color: white; text-decoration: none; border: 1px solid rgba(255,255,255,0.15); font-size: 14px; cursor: pointer; }
 
-        /* 雙按鈕並排結構樣式 */
         .btn-row { display: table; width: 100%; table-layout: fixed; border-collapse: separate; border-spacing: 8px 0; margin-left: -8px; width: calc(100% + 16px); }
         .btn-cell { display: table-cell; }
-
-        /* --- 手機全螢幕模式樣式（隱藏其他元素，名片滿版） --- */
-        body.phone-fullscreen-mode {
-            align-items: center !important;
-            padding-top: 0 !important;
-        }
-        body.phone-fullscreen-mode .profile-section,
-        body.phone-fullscreen-mode .btn-list {
-            display: none !important; 
-        }
-        body.phone-fullscreen-mode .card-container {
-            position: fixed !important;
-            top: 0 !important; left: 0 !important;
-            width: 100vw !important;
-            height: 100vh !important;
-            max-width: none !important;
-            margin: 0 !important;
-            border-radius: 0 !important;
-            z-index: 99999 !important;
-        }
-        body.phone-fullscreen-mode .face img {
-            object-fit: contain !important;
-            background: #000;
-        }
-
-        /* --- 電腦寬螢幕點擊放大樣式（直式等比例放大） --- */
-        .card-container.fullscreen-pc {
-            position: fixed !important;
-            top: 50% !important;
-            left: 50% !important;
-            width: auto !important;
-            height: 90vh !important; 
-            aspect-ratio: 1.7 / 1 !important; 
-            max-width: none !important;
-            margin: 0 !important;
-            border-radius: 12px !important; 
-            z-index: 99999 !important;
-            transform: translate(-50%, -50%) !important; 
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
-        }
-        .card-container.fullscreen-pc .face img {
-            object-fit: contain !important;
-            background: #000;
-        }
 
         #sliderView { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: black; z-index: 9999; justify-content: center; align-items: center; }
         #sliderImg { max-width: 100vw; max-height: 100vh; object-fit: contain; }
 
-        /* 當手機或螢幕【物理打橫】時的樣式調整 */
         @media (orientation: landscape) and (max-width: 900px) {
             body { align-items: center; padding-top: 0; }
-            .profile-section, .btn-list { display: none !important; }
+            .profile-section, .btn-list, .qr-bottom-section { display: none !important; }
             .card-container { max-width: 100vw !important; width: 100vw !important; height: 100vh !important; margin: 0 !important; border-radius: 0 !important; }
             .face img { object-fit: contain !important; background: #000; }
         }
@@ -107,7 +59,7 @@
 
     <div id="overlay" onclick="enterPortal()">
         <div class="overlay-content">
-            <div style="font-size: 20px; letter-spacing: 1px;">Click to enter digital business card<BR>點擊進入數位名片</div>
+            Click to enter digital business card<BR>點擊進入數位名片
         </div>
     </div>
 
@@ -117,10 +69,9 @@
             <div class="name-tag">李彥綸 (Jimmy)</div>
         </div>
 
-        <div class="card-container" id="myCard">
-            <div style="position:absolute; top:0; left:0; width:30%; height:100%; z-index:10;" onclick="handleCardClick('left', event)"></div>
-            <div style="position:absolute; top:0; right:0; width:30%; height:100%; z-index:10;" onclick="handleCardClick('right', event)"></div>
-            <div style="position:absolute; top:0; left:30%; width:40%; height:100%; z-index:10;" onclick="handleCardClick('center', event)"></div>
+        <div class="card-container">
+            <div style="position:absolute; top:0; left:0; width:50%; height:100%; z-index:10;" onclick="navigate('left')"></div>
+            <div style="position:absolute; top:0; right:0; width:50%; height:100%; z-index:10;" onclick="navigate('right')"></div>
             
             <div class="face active" id="p0"><img src="https://king-newton.github.io/cards/jimmy-ch1.jpg"></div>
             <div class="face" id="p1"><img src="https://king-newton.github.io/cards/jimmy-en1.jpg"></div>
@@ -130,19 +81,19 @@
 
         <div class="btn-list">
             <a href="https://www.king-newton.com" class="btn">公司官網</a>
-            <a href="#" class="btn">最新 AI 上位機產品</a>
-            <a href="#" class="btn" onclick="openSlider(event)">智慧綠能解決方案</a>
+            <a href="#" class="btn" onclick="openSlider(event, 'AI')">最新 AI 上位機產品</a>
+            <a href="#" class="btn" onclick="openSlider(event, 'SGES')">智慧綠能解決方案</a>
             
-           <div class="btn-row" style="margin-top: 20px; margin-bottom: 20px; text-align: center;">
-                <div class="btn-cell" style="text-align: center;">
+            <div class="btn-row" style="margin-top: 0px; margin-bottom: 20px; text-align: center;">
+                <div class="btn-cell">
                     <a href="https://king-newton.github.io/cards/contact-jimmy.vcf">
-                        <img src="https://king-newton.github.io/cards/King-Newton.png" alt="儲存中文聯絡人" style="width: 110px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5); transition: transform 0.2s;">
+                        <img src="https://king-newton.github.io/cards/King-Newton.png" alt="儲存中文聯絡人" style="width: 180px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);">
                     </a>
                     <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">中文版通訊錄</div>
                 </div>
-                <div class="btn-cell" style="text-align: center;">
+                <div class="btn-cell">
                     <a href="https://king-newton.github.io/cards/contact-jimmy-en.vcf">
-                        <img src="https://king-newton.github.io/cards/King-Newton-en.png" alt="Save EN Contacts" style="width: 110px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5); transition: transform 0.2s;">
+                        <img src="https://king-newton.github.io/cards/King-Newton-en.png" alt="Save EN Contacts" style="width: 180px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);">
                     </a>
                     <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">English VCF</div>
                 </div>
@@ -156,72 +107,39 @@
 
     <script>
         const overlay = document.getElementById('overlay');
-
         function enterPortal() {
             overlay.style.display = 'none';
-            requestFullScreen();
-        }
-
-        function requestFullScreen() {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen().catch(err => {
-                    console.log("全螢幕請求被瀏覽器拒絕，或需點擊觸發", err);
-                });
-            }
+            if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(()=>{});
         }
 
         let current = 0;
         const map = { 0: { left: 2, right: 1 }, 1: { left: 3, right: 0 }, 2: { left: 3, right: 0 }, 3: { left: 2, right: 1 } };
-        
         function navigate(dir) {
             document.getElementById('p' + current).classList.remove('active');
             current = map[current][dir];
             document.getElementById('p' + current).classList.add('active');
         }
 
-        // 智慧切換邏輯
-        function handleCardClick(zone, event) {
-            event.stopPropagation();
-            const card = document.getElementById('myCard');
-            
-            // 如果目前已經是全螢幕狀態，點擊任何地方都是關閉並退回常規模式
-            if (document.body.classList.contains('phone-fullscreen-mode') || card.classList.contains('fullscreen-pc')) {
-                document.body.classList.remove('phone-fullscreen-mode');
-                card.classList.remove('fullscreen-pc');
-                return;
-            }
+        const slideData = {
+            'AI': Array.from({length: 12}, (_, i) => `https://king-newton.github.io/cards/AI-ESS${i+1}.PNG`),
+            'SGES': Array.from({length: 13}, (_, i) => `https://king-newton.github.io/cards/SGES${i+1}.jpg`)
+        };
 
-            // 常規兩側切換（中英文名片切換）
-            if (zone === 'left') {
-                navigate('left');
-            } else if (zone === 'right') {
-                navigate('right');
-            } else if (zone === 'center') {
-                // 判斷目前是電腦（寬螢幕）還是手機（直螢幕）
-                if (window.innerWidth > window.innerHeight) {
-                    // 1. 電腦版：直接直式等比例放大
-                    card.classList.add('fullscreen-pc');
-                } else {
-                    // 2. 手機直式版：直接隱藏其他內容，名片放大填滿螢幕
-                    document.body.classList.add('phone-fullscreen-mode');
-                }
-            }
-        }
-
-        const slides = Array.from({length: 13}, (_, i) => `https://king-newton.github.io/cards/SGES${i+1}.jpg`);
+        let currentType = '';
         let slideIdx = 0;
 
-        function openSlider(event) {
+        function openSlider(event, type) {
             event.preventDefault();
-            const el = document.getElementById('sliderView');
-            el.style.display = 'flex';
-            document.getElementById('sliderImg').src = slides[slideIdx];
+            currentType = type;
+            slideIdx = 0;
+            document.getElementById('sliderView').style.display = 'flex';
+            document.getElementById('sliderImg').src = slideData[currentType][slideIdx];
         }
 
         function nextSlide() {
             slideIdx++;
-            if (slideIdx < slides.length) {
-                document.getElementById('sliderImg').src = slides[slideIdx];
+            if (slideIdx < slideData[currentType].length) {
+                document.getElementById('sliderImg').src = slideData[currentType][slideIdx];
             } else {
                 slideIdx = 0;
                 document.getElementById('sliderView').style.display = 'none';
