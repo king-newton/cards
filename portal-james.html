@@ -15,7 +15,6 @@
 
         body { align-items: flex-start; padding-top: 40px; }
 
-        /* 過渡遮罩層（純點擊，無倒數） */
         #overlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: #0f172a; z-index: 10000;
@@ -42,31 +41,12 @@
         .btn-list { display: flex; flex-direction: column; gap: 8px; width: 100%; }
         .btn { background: rgba(255, 255, 255, 0.08); padding: 12px; border-radius: 10px; text-align: center; color: white; text-decoration: none; border: 1px solid rgba(255,255,255,0.15); font-size: 14px; cursor: pointer; }
 
-        /* 新增：雙按鈕並排結構樣式 */
         .btn-row { display: table; width: 100%; table-layout: fixed; border-collapse: separate; border-spacing: 8px 0; margin-left: -8px; width: calc(100% + 16px); }
         .btn-cell { display: table-cell; }
-
-        /* 最下方 QR Code 置中樣式 */
-        .qr-bottom-section {
-            margin-top: 20px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        .qr-bottom-section img {
-            width: 110px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-            display: inline-block;
-            transition: transform 0.2s;
-        }
-        .qr-bottom-section img:active {
-            transform: scale(0.95);
-        }
 
         #sliderView { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: black; z-index: 9999; justify-content: center; align-items: center; }
         #sliderImg { max-width: 100vw; max-height: 100vh; object-fit: contain; }
 
-        /* 當手機或螢幕打橫時的樣式調整：呈現全螢幕名片 */
         @media (orientation: landscape) and (max-width: 900px) {
             body { align-items: center; padding-top: 0; }
             .profile-section, .btn-list, .qr-bottom-section { display: none !important; }
@@ -79,7 +59,7 @@
 
     <div id="overlay" onclick="enterPortal()">
         <div class="overlay-content">
-            <div style="font-size: 20px; letter-spacing: 1px;">Click to enter digital business card<BR>點擊進入數位名片</div>
+            Click to enter digital business card<BR>點擊進入數位名片
         </div>
     </div>
 
@@ -101,27 +81,24 @@
 
         <div class="btn-list">
             <a href="https://www.king-newton.com" class="btn">公司官網</a>
-            <a href="#" class="btn">最新 AI 上位機產品</a>
-            <a href="#" class="btn" onclick="openSlider(event)">智慧綠能解決方案</a>
+            <a href="#" class="btn" onclick="openSlider(event, 'AI')">最新 AI 上位機產品</a>
+            <a href="#" class="btn" onclick="openSlider(event, 'SGES')">智慧綠能解決方案</a>
             
-            <div class="btn-row" style="margin-top: 0px; margin-bottom: 20px; text-align: center;">
-            <div class="btn-cell" style="text-align: center;">
-                <a href="https://king-newton.github.io/cards/contact-james.vcf">
-                    <img src="https://king-newton.github.io/cards/King-Newton-jmaes-tw.png" alt="儲存中文聯絡人" style="width: 180px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5); transition: transform 0.2s;">
-                </a>
-                <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">中文版通訊錄</div>
-            </div>
-            <div class="btn-cell" style="text-align: center;">
-                <a href="https://king-newton.github.io/cards/contact-james-en.vcf">
-                    <img src="https://king-newton.github.io/cards/King-Newton-jmaes-en.png" alt="Save EN Contacts" style="width: 180px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5); transition: transform 0.2s;">
-                </a>
-                <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">English VCF</div>
+            <div class="btn-row" style="margin-top: 20px; margin-bottom: 20px; text-align: center;">
+                <div class="btn-cell">
+                    <a href="https://king-newton.github.io/cards/contact-james.vcf">
+                        <img src="https://king-newton.github.io/cards/King-Newton-jmaes-tw.png" alt="儲存中文聯絡人" style="width: 110px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);">
+                    </a>
+                    <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">中文版通訊錄</div>
+                </div>
+                <div class="btn-cell">
+                    <a href="https://king-newton.github.io/cards/contact-james-en.vcf">
+                        <img src="https://king-newton.github.io/cards/King-Newton-jmaes-en.png" alt="Save EN Contacts" style="width: 110px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);">
+                    </a>
+                    <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">English VCF</div>
+                </div>
             </div>
         </div>
-
-        </div>
-
-        
     </div>
 
     <div id="sliderView" onclick="nextSlide()">
@@ -130,18 +107,9 @@
 
     <script>
         const overlay = document.getElementById('overlay');
-
         function enterPortal() {
             overlay.style.display = 'none';
-            requestFullScreen();
-        }
-
-        function requestFullScreen() {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen().catch(err => {
-                    console.log("全螢幕請求被瀏覽器拒絕，或需點擊觸發", err);
-                });
-            }
+            if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(()=>{});
         }
 
         let current = 0;
@@ -152,20 +120,26 @@
             document.getElementById('p' + current).classList.add('active');
         }
 
-        const slides = Array.from({length: 13}, (_, i) => `https://king-newton.github.io/cards/SGES${i+1}.jpg`);
+        const slideData = {
+            'AI': Array.from({length: 12}, (_, i) => `https://king-newton.github.io/cards/AI-ESS${i+1}.PNG`),
+            'SGES': Array.from({length: 13}, (_, i) => `https://king-newton.github.io/cards/SGES${i+1}.jpg`)
+        };
+
+        let currentType = '';
         let slideIdx = 0;
 
-        function openSlider(event) {
+        function openSlider(event, type) {
             event.preventDefault();
-            const el = document.getElementById('sliderView');
-            el.style.display = 'flex';
-            document.getElementById('sliderImg').src = slides[slideIdx];
+            currentType = type;
+            slideIdx = 0;
+            document.getElementById('sliderView').style.display = 'flex';
+            document.getElementById('sliderImg').src = slideData[currentType][slideIdx];
         }
 
         function nextSlide() {
             slideIdx++;
-            if (slideIdx < slides.length) {
-                document.getElementById('sliderImg').src = slides[slideIdx];
+            if (slideIdx < slideData[currentType].length) {
+                document.getElementById('sliderImg').src = slideData[currentType][slideIdx];
             } else {
                 slideIdx = 0;
                 document.getElementById('sliderView').style.display = 'none';
