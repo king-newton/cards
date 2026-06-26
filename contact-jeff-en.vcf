@@ -1,0 +1,15 @@
+BEGIN:VCARD
+VERSION:3.0
+FN:Jeff Yang
+N:Yang;Jeff;;;
+ORG:King Newton Industries Co., Ltd.
+TITLE:Executive Vice President
+TEL;TYPE=CELL:+886-935-490-489
+TEL;TYPE=WORK,VOICE:+886-2-8919-3380
+TEL;TYPE=WORK,VOICE:+886-2-2690-2346
+TEL;TYPE=WORK,FAX:+886-2-8919-3045
+TEL;TYPE=WORK,VOICE;LOC=Tainan:+886-6-598-5682
+EMAIL;TYPE=PREF,INTERNET:jeff@king-newton.com
+ADR;TYPE=WORK:;;No. 789, Zhongshan Rd., Xinhua Dist., Tainan City 712003, Taiwan (R.O.C.)
+NOTE:VAT: 50755805\nSmart. Green. Forever.
+END:VCARD
